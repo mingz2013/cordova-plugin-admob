@@ -2,7 +2,7 @@
   "name": "cordova-plugin-admob",
   "version": "1.0.0",
   "description": "cordova plugin admob",
-  "main": "www/admob.js",
+  "main": "www/AdMob.js",
   "directories": {
     "doc": "doc",
     "test": "tests"

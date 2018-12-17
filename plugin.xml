@@ -10,19 +10,38 @@
     <repo>https://github.com/mingz2013/cordova-plugin-admob.git</repo>
     <issue>https://github.com/mingz2013/cordova-plugin-admob/issues</issue>
 
-    <js-module src="www/admob.js" name="admob">
-        <clobbers target="admob" />
+
+    <preference name="ADMOB_APP_ID" value="ca-app-pub-3940256099942544~3347511713"/>
+
+    <js-module src="www/AdMob.js" name="AdMob">
+        <clobbers target="AdMob"/>
     </js-module>
+    <js-module src="www/AdMobInterface.js" name="AdMobInterface">
+        <clobbers target="AdMobInterface"/>
+    </js-module>
+
 
     <!-- android -->
     <platform name="android">
+        <framework src="src/android/admob.gradle" custom="true" type="gradleReference"/>
+
         <!--<config-file target="res/xml/config.xml" parent="/*">-->
             <!--<feature name="Device" >-->
                 <!--<param name="android-package" value="org.apache.cordova.device.Device"/>-->
             <!--</feature>-->
         <!--</config-file>-->
 
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+            <meta-data
+                    android:name="com.google.android.gms.ads.APPLICATION_ID"
+                    android:value="$ADMOB_APP_ID"/>
+        </config-file>
+
+
         <source-file src="src/android/AdMobPlugin.java" target-dir="src/me/mingz/cordova/admob" />
+
+
     </platform>
 
     <!-- ios -->
