@@ -1,0 +1,44 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:rim="http://www.blackberry.com/ns/widgets"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-admob"
+        version="0.0.1">
+    <name>Admob Plugin</name>
+    <description>Cordova Admob Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,admob</keywords>
+    <repo>https://github.com/mingz2013/cordova-plugin-admob.git</repo>
+    <issue>https://github.com/mingz2013/cordova-plugin-admob/issues</issue>
+
+    <js-module src="www/admob.js" name="admob">
+        <clobbers target="admob" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+        <!--<config-file target="res/xml/config.xml" parent="/*">-->
+            <!--<feature name="Device" >-->
+                <!--<param name="android-package" value="org.apache.cordova.device.Device"/>-->
+            <!--</feature>-->
+        <!--</config-file>-->
+
+        <source-file src="src/android/AdMobPlugin.java" target-dir="src/me/mingz/cordova/admob" />
+    </platform>
+
+    <!-- ios -->
+    <platform name="ios">
+        <!--<config-file target="config.xml" parent="/*">-->
+            <!--<feature name="Device">-->
+                <!--<param name="ios-package" value="CDVDevice"/>-->
+            <!--</feature>-->
+        <!--</config-file>-->
+
+        <!--<header-file src="src/ios/CDVDevice.h" />-->
+        <!--<source-file src="src/ios/CDVDevice.m" />-->
+    </platform>
+
+
+
+
+
+</plugin>
