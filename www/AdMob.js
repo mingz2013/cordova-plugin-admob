@@ -51,19 +51,47 @@ AdMob.isInitialized = function isInitialized() {
 /**
  * init
  * @param {Boolean} params.runType
+ * @param {String} params.testDevice
  * @param {String} params.admobAppId
+ * @param {String} params.admobUnitIdBanner
+ * @param {String} params.admobUnitIdInterstitial
+ * @param {String} params.admobUnitIdInterstitialVideo
+ * @param {String} params.admobUnitIdRewardedVideo
+ * @param {String} params.admobUnitIdNativeAdvanced
+ * @param {String} params.admobUnitIdNativeAdvancedVideo
  * @param {Function} params.onSuccess - optional on success callback
  * @param {Function} params.onFailure - optional on failure callback
  */
 AdMob.init = function (params) {
 
-    params = defaults(params, {runType: this.enum.RUN_TYPE_PROD});
+    params = defaults(params, {
+        runType: this.enum.RUN_TYPE_PROD,
+        testDevice: "",
+        admobAppId: "",
+        admobUnitIdBanner: "",
+        admobUnitIdInterstitial: "",
+        admobUnitIdInterstitialVideo: "",
+        admobUnitIdRewardedVideo: "",
+        admobUnitIdNativeAdvanced: "",
+        admobUnitIdNativeAdvancedVideo: ""
+    });
 
-    if (params.hasOwnProperty('admobAppId') === false) {
-        throw new Error('AdMob.init - admobAppId is required');
-    }
+    // if (params.hasOwnProperty('admobAppId') === false) {
+    //     throw new Error('AdMob.init - admobAppId is required');
+    // }
 
-    callPlugin('init', {admobAppId: params.admobAppId, runType: params.runType}, function () {
+    callPlugin('init', {
+        runType: params.runType,
+        testDevice: params.testDevice,
+        admobAppId: params.admobAppId,
+        admobUnitIdBanner: params.admobUnitIdBanner,
+        admobUnitIdInterstitial: params.admobUnitIdInterstitial,
+        admobUnitIdInterstitialVideo: params.admobUnitIdInterstitialVideo,
+        admobUnitIdRewardedVideo: params.admobUnitIdRewardedVideo,
+        admobUnitIdNativeAdvanced: params.admobUnitIdNativeAdvanced,
+        admobUnitIdNativeAdvancedVideo: params.admobUnitIdNativeAdvancedVideo
+
+    }, function () {
 
         initialized = true;
 
@@ -83,10 +111,6 @@ AdMob.init = function (params) {
 AdMob.createInterstitial = function (params) {
     // "ca-app-pub-3940256099942544/1033173712"
     // params = defaults(params, {unitId: ""});
-
-    // if (params.hasOwnProperty('unitId') === false) {
-    //     throw new Error('AdMob.createInterstitial - unitId is required');
-    // }
 
     callPlugin('createInterstitial', {}, function () {
 

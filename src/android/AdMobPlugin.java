@@ -23,12 +23,13 @@ import android.util.Log;
 public class AdMobPlugin extends CordovaPlugin {
 
     String TAG = "<AdMobPlugin>: ";
-
+    // adtype use with event
     public static final String ADTYPE_BANNER = "banner";
     public static final String ADTYPE_INTERSTITIAL = "interstitial";
     public static final String ADTYPE_NATIVE = "native";
     public static final String ADTYPE_REWARDVIDEO = "rewardedvideo";
 
+    // events emit to js
     public static final String EVENT_ON_AD_CLOSED = "onAdClosed";
     public static final String EVENT_ON_AD_FAILED_TO_LOAD = "onAdFailedToLoad";
     public static final String EVENT_ON_AD_LEFT_APPLICATION = "onAdLeftApplication";
@@ -40,7 +41,7 @@ public class AdMobPlugin extends CordovaPlugin {
     public static final String EVENT_ON_REWARDED_VIDEO_COMPLETED = "onRewardedVideoCompleted";
     public static final String EVENT_ON_REWARDED = "onRewarded";
 
-
+    // adsize, banner
     public static final String ADSIZE_BANNER = "BANNER";//new AdSize(320, 50, "320x50_mb");
     public static final String ADSIZE_FULL_BANNER = "FULL_BANNER";//new AdSize(468, 60, "468x60_as");
     public static final String ADSIZE_LARGE_BANNER = "LARGE_BANNER";//new AdSize(320, 100, "320x100_as");
@@ -49,7 +50,7 @@ public class AdMobPlugin extends CordovaPlugin {
     public static final String ADSIZE_WIDE_SKYSCRAPER = "WIDE_SKYSCRAPER";//new AdSize(160, 600, "160x600_as");
     public static final String ADSIZE_SMART_BANNER = "SMART_BANNER";//new AdSize(-1, -2, "smart_banner");
 
-
+    // admob offical example test id
     public static final String TEST_ADMOB_APP_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String TEST_ADMOB_UNIT_ID_BANNER = "ca-app-pub-3940256099942544/6300978111";
     public static final String TEST_ADMOB_UNIT_ID_INTERSTITIAL = "ca-app-pub-3940256099942544/1033173712";
@@ -58,7 +59,7 @@ public class AdMobPlugin extends CordovaPlugin {
     public static final String TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED = "ca-app-pub-3940256099942544/2247696110";
     public static final String TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED_VIDEO = "ca-app-pub-3940256099942544/1044960115";
 
-
+    // real ids
     private  String admobAppId;
     private  String admobUnitIdBanner;
     private  String admobUnitIdInterstitial;
@@ -66,12 +67,14 @@ public class AdMobPlugin extends CordovaPlugin {
     private  String admobUnitIdRewardedVideo;
     private  String admobUnitIdNativeAdvanced;
     private  String admobUnitIdNativeAdvancedVideo;
-
+    // test device, use to test with device
     private  String testDevice = "33BE2250B43518CCDA7DE426D04EE231";
+
+    // run type
     private String runType = RUN_TYPE_PROD;
 
-
     public static final String RUN_TYPE_PROD = "RUN_TYPE_PROD";
+    // two ways to get test ads, use one of test units id. or enable test devices
     public static final String RUN_TYPE_TEST_WITH_TEST_ID = "RUN_TYPE_TEST_WITH_TEST_ID";
     public static final String RUN_TYPE_TEST_WITH_DEVICE = "RUN_TYPE_TEST_WITH_DEVICE";
 
@@ -324,7 +327,7 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
 
-    private void execActionCreateInterstitial(JSONObject args, CallbackContext callbackContext) throws JSONException {
+    private void execActionCreateInterstitial(JSONObject args, CallbackContext callbackContext){
 
         this.createInterstitial();
         callbackContext.success();
@@ -485,7 +488,7 @@ public class AdMobPlugin extends CordovaPlugin {
         });
     }
 
-    private void execActionLoadRewardedVideo(JSONObject args, CallbackContext callbackContext) throws JSONException {
+    private void execActionLoadRewardedVideo(JSONObject args, CallbackContext callbackContext) {
 
         this.loadRewardedVideo();
         callbackContext.success();
@@ -534,7 +537,6 @@ public class AdMobPlugin extends CordovaPlugin {
 
 
     private void createBanner(AdSize size) {
-        AdMobPlugin self = this;
         createBannerView(size);
         mBannerView.setAdUnitId(this.admobUnitIdBanner);
         mBannerView.setAdListener(new AdListener() {
@@ -611,7 +613,7 @@ public class AdMobPlugin extends CordovaPlugin {
 
 
     private void showBanner() {
-
+        // TODO
     }
 
     private void execActionHideBanner(JSONObject args, CallbackContext callbackContext) {
@@ -623,7 +625,7 @@ public class AdMobPlugin extends CordovaPlugin {
 
 
     private void hideBanner() {
-
+// TODO
     }
 
 

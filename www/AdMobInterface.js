@@ -1,13 +1,25 @@
 'use strict';
 
 
+/**
+ * init
+ * @param {Boolean} params.runType
+ * @param {String} params.testDevice
+ * @param {String} params.admobAppId
+ * @param {String} params.admobUnitIdBanner
+ * @param {String} params.admobUnitIdInterstitial
+ * @param {String} params.admobUnitIdInterstitialVideo
+ * @param {String} params.admobUnitIdRewardedVideo
+ * @param {String} params.admobUnitIdNativeAdvanced
+ * @param {String} params.admobUnitIdNativeAdvancedVideo
+ */
 var AdMobInterafce = function (params) {
     this.init(params);
 };
 
 
 var log = function (funcName, message) {
-    console.log("AdMobInterafce" + message);
+    console.log("<AdMobInterafce><log>-<" + funcName + "> msg:" + message);
 };
 
 
@@ -159,20 +171,46 @@ AdMobInterafce.prototype._initListener = function () {
 
 /**
  * init
- * @param {Boolean} params.debug
- * @param {String} params.admobAppKey
- * @param {Function} params.onSuccess - optional on success callback
- * @param {Function} params.onFailure - optional on failure callback
+ * @param {Boolean} params.runType
+ * @param {String} params.testDevice
+ * @param {String} params.admobAppId
+ * @param {String} params.admobUnitIdBanner
+ * @param {String} params.admobUnitIdInterstitial
+ * @param {String} params.admobUnitIdInterstitialVideo
+ * @param {String} params.admobUnitIdRewardedVideo
+ * @param {String} params.admobUnitIdNativeAdvanced
+ * @param {String} params.admobUnitIdNativeAdvancedVideo
  */
 AdMobInterafce.prototype.init = function (params) {
-    params = defaults(params, {debug: false});
+    params = defaults(params, {
+        runType: this.enum.RUN_TYPE_PROD,
+        testDevice: "",
+        admobAppId: "",
+        admobUnitIdBanner: "",
+        admobUnitIdInterstitial: "",
+        admobUnitIdInterstitialVideo: "",
+        admobUnitIdRewardedVideo: "",
+        admobUnitIdNativeAdvanced: "",
+        admobUnitIdNativeAdvancedVideo: ""
+    });
 
     AdMob.init({
-        debug: params.debug,
-        admobAppKey: params.admobAppKey,
+        runType: params.runType,
+        testDevice: params.testDevice,
+        admobAppId: params.admobAppId,
+        admobUnitIdBanner: params.admobUnitIdBanner,
+        admobUnitIdInterstitial: params.admobUnitIdInterstitial,
+        admobUnitIdInterstitialVideo: params.admobUnitIdInterstitialVideo,
+        admobUnitIdRewardedVideo: params.admobUnitIdRewardedVideo,
+        admobUnitIdNativeAdvanced: params.admobUnitIdNativeAdvanced,
+        admobUnitIdNativeAdvancedVideo: params.admobUnitIdNativeAdvancedVideo,
+
+
         onFailure: function () {
             log("init", "onFailure: init....");
         }.bind(this),
+
+
         onSuccess: function () {
 
 
@@ -189,22 +227,22 @@ AdMobInterafce.prototype.init = function (params) {
 
 
 AdMobInterafce.prototype.showBanner = function () {
-
+    AdMob.showBanner();
 };
 
 
 AdMobInterafce.prototype.hideBanner = function () {
-
+    AdMob.hideBanner();
 };
 
 
-AdMobInterafce.prototype.showInterstitial = function () {
-
+AdMobInterafce.prototype.showInterstitial = function (params) {
+    AdMob.showInterstitial({});
 };
 
 
-AdMobInterafce.prototype.showRewardedVideo = function () {
-
+AdMobInterafce.prototype.showRewardedVideo = function (params) {
+    AdMob.showRewardedVideo();
 };
 
 

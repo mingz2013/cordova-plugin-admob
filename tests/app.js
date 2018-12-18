@@ -1,3 +1,5 @@
+window._adMobInterafce = null;
+
 window.onload = function () {
 
     function showlog(message) {
@@ -6,88 +8,28 @@ window.onload = function () {
         console.log(message);
     }
 
-
     document.addEventListener('deviceready', function () {
-        console.log("deviceready.....");
+        showlog("deviceready.....");
 
-        //admob app Id
-        var admobAppId = "ca-app-pub-3940256099942544~3347511713";
-        console.log("admobAppId..." + admobAppId);
+        window._adMobInterafce = new AdMobInterafce({});
 
-        /**
-         * Initialize Iron Source Ads
-         */
-        AdMob.init({
-
-
-            admobAppId: admobAppId,
-            debug: true,
-
-
-            onSuccess: function () {
-
-                console.log("init.....onSuccess....");
-
-
-            },
-            onFailure: function (data) {
-                console.log("onFailure...." + data);
-            }
-        });
 
     });
 
-
-    document.getElementById("loadInterstitialAds").onclick = function () {
-        IronSourceAds.loadInterstitial();
-    };
-
     document.getElementById("showInterstitialAds").onclick = function () {
-        IronSourceAds.hasInterstitial({
-            onSuccess: function (available) {
-                if (available) {
-                    //Show Interstitial
-                    IronSourceAds.showInterstitial();
-                }
-            }
-        });
+        window._adMobInterafce.showInterstitial();
     };
 
     document.getElementById("showRewardVideoAds").onclick = function () {
-        IronSourceAds.hasRewardedVideo({
-            onSuccess: function (available) {
-                if (available) {
-                    //Show offerwall
-                    IronSourceAds.showRewardedVideo();
-                }
-            }
-        });
+        window._adMobInterafce.showRewardedVideo();
     };
-
-
-    document.getElementById("showOfferwall").onclick = function () {
-        IronSourceAds.hasOfferwall({
-            onSuccess: function (available) {
-                if (available) {
-                    //Show offerwall
-                    IronSourceAds.showOfferwall();
-                }
-            }
-        });
-    };
-
-
-    document.getElementById("loadBannerAds").onclick = function () {
-        IronSourceAds.loadBanner();
-    };
-
 
     document.getElementById("showBannerAds").onclick = function () {
-        IronSourceAds.showBanner();
+        window._adMobInterafce.showBanner();
     };
 
     document.getElementById("hidebannerAds").onclick = function () {
-        IronSourceAds.hideBanner();
+        window._adMobInterafce.hideBanner();
     };
 
 

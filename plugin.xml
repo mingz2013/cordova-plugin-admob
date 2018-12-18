@@ -38,7 +38,12 @@
                     android:value="$ADMOB_APP_ID"/>
         </config-file>
 
-
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="AdMob">
+                <param name="android-package" value="me.mingz.cordova.admob.AdMobPlugin"/>
+                <param name="onload" value="true"/>
+            </feature>
+        </config-file>
         <source-file src="src/android/AdMobPlugin.java" target-dir="src/me/mingz/cordova/admob" />
 
 
