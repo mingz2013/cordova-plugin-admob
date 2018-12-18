@@ -41,9 +41,50 @@ public class AdMobPlugin extends CordovaPlugin {
     public static final String EVENT_ON_REWARDED = "onRewarded";
 
 
+    public static final String ADSIZE_BANNER = "BANNER";//new AdSize(320, 50, "320x50_mb");
+    public static final String ADSIZE_FULL_BANNER = "FULL_BANNER";//new AdSize(468, 60, "468x60_as");
+    public static final String ADSIZE_LARGE_BANNER = "LARGE_BANNER";//new AdSize(320, 100, "320x100_as");
+    public static final String ADSIZE_LEADERBOARD = "LEADERBOARD";//new AdSize(728, 90, "728x90_as");
+    public static final String ADSIZE_MEDIUM_RECTANGLE = "MEDIUM_RECTANGLE";//new AdSize(300, 250, "300x250_as");
+    public static final String ADSIZE_WIDE_SKYSCRAPER = "WIDE_SKYSCRAPER";//new AdSize(160, 600, "160x600_as");
+    public static final String ADSIZE_SMART_BANNER = "SMART_BANNER";//new AdSize(-1, -2, "smart_banner");
+
+
+    public static final String TEST_ADMOB_APP_ID = "ca-app-pub-3940256099942544~3347511713";
+    public static final String TEST_ADMOB_UNIT_ID_BANNER = "ca-app-pub-3940256099942544/6300978111";
+    public static final String TEST_ADMOB_UNIT_ID_INTERSTITIAL = "ca-app-pub-3940256099942544/1033173712";
+    public static final String TEST_ADMOB_UNIT_ID_INTERSTITIAL_VIDEO = "ca-app-pub-3940256099942544/8691691433";
+    public static final String TEST_ADMOB_UNIT_ID_REWARDED_VIDEO = "ca-app-pub-3940256099942544/5224354917";
+    public static final String TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED = "ca-app-pub-3940256099942544/2247696110";
+    public static final String TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED_VIDEO = "ca-app-pub-3940256099942544/1044960115";
+
+
+    private  String admobAppId;
+    private  String admobUnitIdBanner;
+    private  String admobUnitIdInterstitial;
+    private  String admobUnitIdInterstitialVideo;
+    private  String admobUnitIdRewardedVideo;
+    private  String admobUnitIdNativeAdvanced;
+    private  String admobUnitIdNativeAdvancedVideo;
+
+    private  String testDevice = "33BE2250B43518CCDA7DE426D04EE231";
+    private String runType = RUN_TYPE_PROD;
+
+
+    public static final String RUN_TYPE_PROD = "RUN_TYPE_PROD";
+    public static final String RUN_TYPE_TEST_WITH_TEST_ID = "RUN_TYPE_TEST_WITH_TEST_ID";
+    public static final String RUN_TYPE_TEST_WITH_DEVICE = "RUN_TYPE_TEST_WITH_DEVICE";
+
+
+
+
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd mRewardedVideoAd;
     private AdView mBannerView;
+
+
+
+
 
 
     /*************************utils******************************/
@@ -68,6 +109,27 @@ public class AdMobPlugin extends CordovaPlugin {
                 break;
         }
         return errorReason;
+    }
+
+    public AdSize getBannerSize(String size, int w, int h) {
+        switch (size) {
+            case ADSIZE_BANNER:
+                return AdSize.BANNER;
+            case ADSIZE_FULL_BANNER:
+                return AdSize.FULL_BANNER;
+            case ADSIZE_LARGE_BANNER:
+                return AdSize.LARGE_BANNER;
+            case ADSIZE_LEADERBOARD:
+                return AdSize.LEADERBOARD;
+            case ADSIZE_MEDIUM_RECTANGLE:
+                return AdSize.MEDIUM_RECTANGLE;
+            case ADSIZE_WIDE_SKYSCRAPER:
+                return AdSize.WIDE_SKYSCRAPER;
+            case ADSIZE_SMART_BANNER:
+                return AdSize.SMART_BANNER;
+            default:
+                return new AdSize(w, h);
+        }
     }
 
 
@@ -140,60 +202,79 @@ public class AdMobPlugin extends CordovaPlugin {
 
     @Override
     public void onResume(boolean multitasking) {
-        mRewardedVideoAd.resume(this.getActivity());
-        mBannerView.pause();
+        if (mRewardedVideoAd != null) {
+            mRewardedVideoAd.resume(this.getActivity());
+        }
+        if (mBannerView != null) {
+            mBannerView.pause();
+        }
+
+
         super.onResume(multitasking);
     }
 
 
     @Override
     public void onPause(boolean multitasking) {
-        mRewardedVideoAd.pause(this.getActivity());
-        mBannerView.resume();
+        if (mRewardedVideoAd != null) {
+            mRewardedVideoAd.pause(this.getActivity());
+        }
+        if (mBannerView != null) {
+            mBannerView.resume();
+        }
+
         super.onPause(multitasking);
     }
 
 
     @Override
     public void onDestroy() {
-        mRewardedVideoAd.destroy(this.getActivity());
-        mBannerView.destroy();
+        if (mRewardedVideoAd != null) {
+            mRewardedVideoAd.destroy(this.getActivity());
+        }
+        if (mBannerView != null) {
+            mBannerView.destroy();
+        }
         super.onDestroy();
     }
 
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+        JSONObject params = args.getJSONObject(0);
 
         if (action.equals("init")) {
-            this.execActionInit(args, callbackContext);
+            this.execActionInit(params, callbackContext);
             return true;
         } else if (action.equals("createInterstitial")) {
-            this.execActionCreateInterstitial(args, callbackContext);
+            this.execActionCreateInterstitial(params, callbackContext);
             return true;
         } else if (action.equals("loadInterstitial")) {
-            this.execActionLoadInterstitial(args, callbackContext);
+            this.execActionLoadInterstitial(params, callbackContext);
             return true;
         } else if (action.equals("showInterstitial")) {
-            this.execActionShowInterstitial(args, callbackContext);
+            this.execActionShowInterstitial(params, callbackContext);
             return true;
         } else if (action.equals("createRewardedVideo")) {
-            this.execActionCreateRewardedVideo(args, callbackContext);
+            this.execActionCreateRewardedVideo(params, callbackContext);
             return true;
         } else if (action.equals("loadRewardedVideo")) {
-            this.execActionLoadRewardedVideo(args, callbackContext);
+            this.execActionLoadRewardedVideo(params, callbackContext);
             return true;
         } else if (action.equals("showRewardedVideo")) {
-            this.execActionShowRewardedVideo(args, callbackContext);
+            this.execActionShowRewardedVideo(params, callbackContext);
             return true;
         } else if (action.equals("createBanner")) {
-            this.execActionCreateBanner(args, callbackContext);
+            this.execActionCreateBanner(params, callbackContext);
+            return true;
+        } else if (action.equals("loadBanner")) {
+            this.execActionLoadBanner(params, callbackContext);
             return true;
         } else if (action.equals("showBanner")) {
-            this.execActionShowBanner(args, callbackContext);
+            this.execActionShowBanner(params, callbackContext);
             return true;
         } else if (action.equals("hideBanner")) {
-            this.execActionHideBanner(args, callbackContext);
+            this.execActionHideBanner(params, callbackContext);
             return true;
         }
         return super.execute(action, args, callbackContext);
@@ -201,13 +282,11 @@ public class AdMobPlugin extends CordovaPlugin {
 
     /*************************execute action******************************/
 
-    private void execActionInit(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+    private void execActionInit(JSONObject args, CallbackContext callbackContext) throws JSONException{
 
 
-        final String admobAppKey = args.getString(0);
 
-
-        this.init(admobAppKey);
+        this.init(args);
 
         callbackContext.success();
 
@@ -215,24 +294,48 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
 
-    private void init(String admobAppKey) {
+    private void init(JSONObject args) throws JSONException {
+        this.testDevice = args.getString("testDevice");
+
+        this.runType = args.getString("runType");
+
+        if(this.runType.equals(RUN_TYPE_TEST_WITH_TEST_ID)){
+            this.admobAppId = TEST_ADMOB_APP_ID;
+            this.admobUnitIdBanner = TEST_ADMOB_UNIT_ID_BANNER;
+            this.admobUnitIdInterstitial = TEST_ADMOB_UNIT_ID_INTERSTITIAL;
+            this.admobUnitIdInterstitialVideo = TEST_ADMOB_UNIT_ID_INTERSTITIAL_VIDEO;
+            this.admobUnitIdRewardedVideo = TEST_ADMOB_UNIT_ID_REWARDED_VIDEO;
+            this.admobUnitIdNativeAdvanced = TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED;
+            this.admobUnitIdNativeAdvancedVideo = TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED_VIDEO;
+        }else{
+            this.admobAppId = args.getString("admobAppId");
+            this.admobUnitIdBanner = args.getString("admobUnitIdBanner");
+            this.admobUnitIdInterstitial = args.getString("admobUnitIdInterstitial");
+            this.admobUnitIdInterstitialVideo = args.getString("admobUnitIdInterstitialVideo");
+            this.admobUnitIdRewardedVideo = args.getString("admobUnitIdRewardedVideo");
+            this.admobUnitIdNativeAdvanced = args.getString("admobUnitIdNativeAdvanced");
+            this.admobUnitIdNativeAdvancedVideo = args.getString("admobUnitIdNativeAdvancedVideo");
+
+        }
+
+
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this.getActivity(), admobAppKey);
+        MobileAds.initialize(this.getActivity(), this.admobAppId);
     }
 
 
-    private void execActionCreateInterstitial(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        final String unitId = args.getString(0);
-        this.createInterstitial(unitId);
+    private void execActionCreateInterstitial(JSONObject args, CallbackContext callbackContext) throws JSONException {
+
+        this.createInterstitial();
         callbackContext.success();
 
     }
 
-    private void createInterstitial(final String unitId) {
+    private void createInterstitial() {
         if (mInterstitialAd == null) {
             AdMobPlugin self = this;
             mInterstitialAd = new InterstitialAd(this.getActivity());
-            mInterstitialAd.setAdUnitId(unitId);
+            mInterstitialAd.setAdUnitId(this.admobUnitIdInterstitial);
             mInterstitialAd.setAdListener(new AdListener() {
                 @Override
                 public void onAdClosed() {
@@ -285,7 +388,7 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
 
-    private void execActionLoadInterstitial(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionLoadInterstitial(JSONObject args, CallbackContext callbackContext) {
         this.loadInterstitial();
         callbackContext.success();
     }
@@ -293,11 +396,13 @@ public class AdMobPlugin extends CordovaPlugin {
 
     private void loadInterstitial() {
         if (!mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
-//            AdRequest adRequest = new AdRequest.Builder()
-//                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-//                    .build();
+            AdRequest.Builder builder = new AdRequest.Builder();
+            if(this.runType.equals(RUN_TYPE_TEST_WITH_DEVICE)){
+                builder.addTestDevice(this.testDevice);
+            }
+            AdRequest adRequest = builder.build();
 
-            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            mInterstitialAd.loadAd(adRequest);
         } else {
             Log.d(TAG, "loadInterstitial: isloading or is loaded");
         }
@@ -305,7 +410,7 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
 
-    private void execActionShowInterstitial(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionShowInterstitial(JSONObject args, CallbackContext callbackContext) {
         this.showInterstitial();
         callbackContext.success();
     }
@@ -316,7 +421,7 @@ public class AdMobPlugin extends CordovaPlugin {
         }
     }
 
-    private void execActionCreateRewardedVideo(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionCreateRewardedVideo(JSONObject args, CallbackContext callbackContext) {
         this.createRewardedVideo();
         callbackContext.success();
     }
@@ -380,19 +485,24 @@ public class AdMobPlugin extends CordovaPlugin {
         });
     }
 
-    private void execActionLoadRewardedVideo(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        final String unitId = args.getString(0);
-        this.loadRewardedVideo(unitId);
+    private void execActionLoadRewardedVideo(JSONObject args, CallbackContext callbackContext) throws JSONException {
+
+        this.loadRewardedVideo();
         callbackContext.success();
 
     }
 
-    private void loadRewardedVideo(String unitId) {
-        mRewardedVideoAd.loadAd(unitId, new AdRequest.Builder().build());
+    private void loadRewardedVideo() {
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if(this.runType.equals(RUN_TYPE_TEST_WITH_DEVICE)){
+            builder.addTestDevice(this.testDevice);
+        }
+        AdRequest adRequest = builder.build();
+        mRewardedVideoAd.loadAd(this.admobUnitIdRewardedVideo, adRequest);
     }
 
 
-    private void execActionShowRewardedVideo(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionShowRewardedVideo(JSONObject args, CallbackContext callbackContext) {
 
         this.showRewardedVideo();
         callbackContext.success();
@@ -406,27 +516,27 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
 
-    private void createBannerView() {
+    private void createBannerView(AdSize size) {
         mBannerView = new AdView(this.getActivity());
-        // TODO
-        mBannerView.setAdSize(AdSize.BANNER);
-//        bannerView.setAdSize(AdSize.SMART_BANNER);
+        mBannerView.setAdSize(size);
 
     }
 
 
-    private void execActionCreateBanner(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        final String unitId = args.getString(0);
-        this.createBanner(unitId);
+    private void execActionCreateBanner(JSONObject args, CallbackContext callbackContext) throws JSONException {
+        final String size = args.getString("size");
+        final int w = args.getInt("w");
+        final int h = args.getInt("h");
+        this.createBanner(getBannerSize(size, w, h));
         callbackContext.success();
 
     }
 
 
-    private void createBanner(String unitId) {
+    private void createBanner(AdSize size) {
         AdMobPlugin self = this;
-        createBannerView();
-        mBannerView.setAdUnitId(unitId);
+        createBannerView(size);
+        mBannerView.setAdUnitId(this.admobUnitIdBanner);
         mBannerView.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
@@ -476,7 +586,7 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
 
-    private void execActionLoadBanner(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionLoadBanner(JSONObject args, CallbackContext callbackContext) {
 
         this.loadBanner();
         callbackContext.success();
@@ -484,10 +594,15 @@ public class AdMobPlugin extends CordovaPlugin {
     }
 
     private void loadBanner() {
-        mBannerView.loadAd(new AdRequest.Builder().build());
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if(this.runType.equals(RUN_TYPE_TEST_WITH_DEVICE)){
+            builder.addTestDevice(this.testDevice);
+        }
+        AdRequest adRequest = builder.build();
+        mBannerView.loadAd(adRequest);
     }
 
-    private void execActionShowBanner(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionShowBanner(JSONObject args, CallbackContext callbackContext) {
 
         this.showBanner();
         callbackContext.success();
@@ -499,7 +614,7 @@ public class AdMobPlugin extends CordovaPlugin {
 
     }
 
-    private void execActionHideBanner(CordovaArgs args, CallbackContext callbackContext) {
+    private void execActionHideBanner(JSONObject args, CallbackContext callbackContext) {
 
         this.hideBanner();
         callbackContext.success();

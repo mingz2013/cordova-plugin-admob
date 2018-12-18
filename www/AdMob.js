@@ -20,6 +20,22 @@ AdMob.enum = {
     EVENT_ON_REWARDED_VIDEO_STARTED: "onRewardedVideoStarted",
     EVENT_ON_REWARDED_VIDEO_COMPLETED: "onRewardedVideoCompleted",
     EVENT_ON_REWARDED: "onRewarded",
+
+
+    ADSIZE_BANNER: "BANNER",//new AdSize(320, 50, "320x50_mb");
+    ADSIZE_FULL_BANNER: "FULL_BANNER",//new AdSize(468, 60, "468x60_as");
+    ADSIZE_LARGE_BANNER: "LARGE_BANNER",//new AdSize(320, 100, "320x100_as");
+    ADSIZE_LEADERBOARD: "LEADERBOARD",//new AdSize(728, 90, "728x90_as");
+    ADSIZE_MEDIUM_RECTANGLE: "MEDIUM_RECTANGLE",//new AdSize(300, 250, "300x250_as");
+    ADSIZE_WIDE_SKYSCRAPER: "WIDE_SKYSCRAPER",//new AdSize(160, 600, "160x600_as");
+    ADSIZE_SMART_BANNER: "SMART_BANNER",//new AdSize(-1, -2, "smart_banner");
+
+
+    RUN_TYPE_PROD: "RUN_TYPE_PROD",
+    RUN_TYPE_TEST_WITH_TEST_ID: "RUN_TYPE_TEST_WITH_TEST_ID",
+    RUN_TYPE_TEST_WITH_DEVICE: "RUN_TYPE_TEST_WITH_DEVICE",
+
+
 };
 
 
@@ -34,20 +50,20 @@ AdMob.isInitialized = function isInitialized() {
 
 /**
  * init
- * @param {Boolean} params.debug
- * @param {String} params.admobAppKey
+ * @param {Boolean} params.runType
+ * @param {String} params.admobAppId
  * @param {Function} params.onSuccess - optional on success callback
  * @param {Function} params.onFailure - optional on failure callback
  */
 AdMob.init = function (params) {
 
-    params = defaults(params, {debug: false});
+    params = defaults(params, {runType: this.enum.RUN_TYPE_PROD});
 
-    if (params.hasOwnProperty('admobAppKey') === false) {
-        throw new Error('AdMob.init - admobAppKey is required');
+    if (params.hasOwnProperty('admobAppId') === false) {
+        throw new Error('AdMob.init - admobAppId is required');
     }
 
-    callPlugin('init', [params.admobAppKey], function () {
+    callPlugin('init', {admobAppId: params.admobAppId, runType: params.runType}, function () {
 
         initialized = true;
 
@@ -61,7 +77,6 @@ AdMob.init = function (params) {
 
 /**
  * createInterstitial
- * @param {String} params.unitId
  * @param {Function} params.onSuccess - optional on success callback
  * @param {Function} params.onFailure - optional on failure callback
  */
@@ -69,11 +84,11 @@ AdMob.createInterstitial = function (params) {
     // "ca-app-pub-3940256099942544/1033173712"
     // params = defaults(params, {unitId: ""});
 
-    if (params.hasOwnProperty('unitId') === false) {
-        throw new Error('AdMob.createInterstitial - unitId is required');
-    }
+    // if (params.hasOwnProperty('unitId') === false) {
+    //     throw new Error('AdMob.createInterstitial - unitId is required');
+    // }
 
-    callPlugin('createInterstitial', [params.unitId], function () {
+    callPlugin('createInterstitial', {}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -91,7 +106,7 @@ AdMob.createInterstitial = function (params) {
  */
 AdMob.loadInterstitial = function (params) {
 
-    callPlugin('loadInterstitial', [], function () {
+    callPlugin('loadInterstitial', {}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -108,7 +123,7 @@ AdMob.loadInterstitial = function (params) {
  */
 AdMob.showInterstitial = function (params) {
 
-    callPlugin('showInterstitial', [], function () {
+    callPlugin('showInterstitial', {}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -120,12 +135,21 @@ AdMob.showInterstitial = function (params) {
 
 /**
  * createBanner
+ * @param {String} params.size
+ * @param {int} params.w
+ * @param {int} params.h
  * @param {Function} params.onSuccess - optional on success callback
  * @param {Function} params.onFailure - optional on failure callback
  */
 AdMob.createBanner = function (params) {
 
-    callPlugin('createBanner', [], function () {
+    params = defaults(params, {size: this.enum.ADSIZE_SMART_BANNER, w: 0, h: 0});
+
+    // if (params.hasOwnProperty('unitId') === false) {
+    //     throw new Error('AdMob.createBanner - unitId is required');
+    // }
+
+    callPlugin('createBanner', {size: params.size, w: params.w, h: params.h}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -142,7 +166,7 @@ AdMob.createBanner = function (params) {
  */
 AdMob.loadBanner = function (params) {
 
-    callPlugin('loadBanner', [], function () {
+    callPlugin('loadBanner', {}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -159,7 +183,7 @@ AdMob.loadBanner = function (params) {
  */
 AdMob.showBanner = function (params) {
 
-    callPlugin('showBanner', [], function () {
+    callPlugin('showBanner', {}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -177,7 +201,7 @@ AdMob.showBanner = function (params) {
  */
 AdMob.hideBanner = function (params) {
 
-    callPlugin('hideBanner', [], function () {
+    callPlugin('hideBanner', {}, function () {
 
 
         if (isFunction(params.onSuccess)) {
@@ -191,7 +215,7 @@ AdMob.hideBanner = function (params) {
 /**
  * Helper function to call cordova plugin
  * @param {String} name - function name to call
- * @param {Array} params - optional params
+ * @param {Object} params - optional params
  * @param {Function} onSuccess - optional on sucess function
  * @param {Function} onFailure - optional on failure functioin
  */
@@ -205,7 +229,7 @@ function callPlugin(name, params, onSuccess, onFailure) {
         if (isFunction(onFailure)) {
             onFailure(error)
         }
-    }, 'AdMobPlugin', name, params);
+    }, 'AdMobPlugin', name, [params]);
 }
 
 
