@@ -25,6 +25,7 @@ var log = function (funcName, message) {
 
 AdMobInterafce.prototype._initListener = function () {
     window.addEventListener(AdMob.EVENT_ON_AD_CLOSED, function (data) {
+        console.log("EVENT_ON_AD_CLOSED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -40,6 +41,7 @@ AdMobInterafce.prototype._initListener = function () {
 
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_AD_FAILED_TO_LOAD, function (data) {
+        console.log("EVENT_ON_AD_FAILED_TO_LOAD data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -54,6 +56,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_AD_LEFT_APPLICATION, function (data) {
+        console.log("EVENT_ON_AD_LEFT_APPLICATION data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -68,6 +71,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_AD_OPENED, function (data) {
+        console.log("EVENT_ON_AD_OPENED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -82,6 +86,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_AD_LOADED, function (data) {
+        console.log("EVENT_ON_AD_LOADED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -96,6 +101,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_AD_CLICKED, function (data) {
+        console.log("EVENT_ON_AD_CLICKED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -110,6 +116,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_AD_IMPRESSION, function (data) {
+        console.log("EVENT_ON_AD_IMPRESSION data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -124,6 +131,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_REWARDED_VIDEO_STARTED, function (data) {
+        console.log("EVENT_ON_REWARDED_VIDEO_STARTED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -138,6 +146,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_REWARDED_VIDEO_COMPLETED, function (data) {
+        console.log("EVENT_ON_REWARDED_VIDEO_COMPLETED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -152,6 +161,7 @@ AdMobInterafce.prototype._initListener = function () {
         }
     }.bind(this));
     window.addEventListener(AdMob.EVENT_ON_REWARDED, function (data) {
+        console.log("EVENT_ON_REWARDED data: " + data);
         switch (data["adType"]) {
             case AdMob.ADTYPE_BANNER:
                 break;
@@ -212,7 +222,7 @@ AdMobInterafce.prototype.init = function (params) {
 
 
         onSuccess: function () {
-
+            console.log("AdMob.init...onSuccess.....");
 
             this._initListener();
 

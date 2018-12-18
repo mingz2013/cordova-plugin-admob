@@ -63,7 +63,7 @@ AdMob.isInitialized = function isInitialized() {
  * @param {Function} params.onFailure - optional on failure callback
  */
 AdMob.init = function (params) {
-
+    console.log("ADmob.init...params:" + JSON.stringify(params));
     params = defaults(params, {
         runType: this.enum.RUN_TYPE_PROD,
         testDevice: "",
