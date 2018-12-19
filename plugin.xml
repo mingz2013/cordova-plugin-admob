@@ -13,6 +13,12 @@
 
     <preference name="ADMOB_APP_ID" value="ca-app-pub-3940256099942544~3347511713"/>
 
+    <engines>
+        <engine name="cordova-android"/>
+        <!--<engine name="cordova-ios" />-->
+    </engines>
+
+
     <js-module src="www/AdMob.js" name="AdMob">
         <clobbers target="AdMob"/>
     </js-module>
@@ -24,12 +30,6 @@
     <!-- android -->
     <platform name="android">
         <framework src="src/android/admob.gradle" custom="true" type="gradleReference"/>
-
-        <!--<config-file target="res/xml/config.xml" parent="/*">-->
-            <!--<feature name="Device" >-->
-                <!--<param name="android-package" value="org.apache.cordova.device.Device"/>-->
-            <!--</feature>-->
-        <!--</config-file>-->
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
@@ -50,16 +50,21 @@
     </platform>
 
     <!-- ios -->
-    <!--<platform name="ios">-->
-        <!--<config-file target="config.xml" parent="/*">-->
-            <!--<feature name="Device">-->
-                <!--<param name="ios-package" value="CDVDevice"/>-->
-            <!--</feature>-->
-        <!--</config-file>-->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="AdMobPlugin">
+                <param name="ios-package" value="AdMobPlugin"/>
+                <param name="onload" value="true"/>
+            </feature>
+        </config-file>
 
-        <!--<header-file src="src/ios/CDVDevice.h" />-->
-        <!--<source-file src="src/ios/CDVDevice.m" />-->
-    <!--</platform>-->
+
+        <header-file src="src/ios/AdMobPlugin.h"/>
+        <source-file src="src/ios/AdMobPlugin.m"/>
+
+        <framework src="Google-Mobile-Ads-SDK" type="podspec"/>
+
+    </platform>
 
 
 
