@@ -64,29 +64,11 @@ public class AdMobPlugin extends CordovaPlugin {
     public static final String TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED = "ca-app-pub-3940256099942544/2247696110";
     public static final String TEST_ADMOB_UNIT_ID_NATIVE_ADVANCED_VIDEO = "ca-app-pub-3940256099942544/1044960115";
 
-    // real ids
-    private String admobAppId;
-    private String admobUnitIdBanner;
-    private String admobUnitIdInterstitial;
-    private String admobUnitIdInterstitialVideo;
-    private String admobUnitIdRewardedVideo;
-    private String admobUnitIdNativeAdvanced;
-    private String admobUnitIdNativeAdvancedVideo;
-    // test device, use to test with device
-    private String testDevice = "33BE2250B43518CCDA7DE426D04EE231";
-
     // run type
-    private String runType = RUN_TYPE_PROD;
-
     public static final String RUN_TYPE_PROD = "RUN_TYPE_PROD";
     // two ways to get test ads, use one of test units id. or enable test devices
     public static final String RUN_TYPE_TEST_WITH_TEST_ID = "RUN_TYPE_TEST_WITH_TEST_ID";
     public static final String RUN_TYPE_TEST_WITH_DEVICE = "RUN_TYPE_TEST_WITH_DEVICE";
-
-
-    // ads
-    private InterstitialAd mInterstitialAd;
-    private RewardedVideoAd mRewardedVideoAd;
 
 
     // banner position
@@ -101,6 +83,30 @@ public class AdMobPlugin extends CordovaPlugin {
     final private int BANNER_POSITION_BOTTOM_CENTER = 8;
     final private int BANNER_POSITION_BOTTOM_RIGHT = 9;
     final private int BANNER_POSITION_POS_XY = 10;
+
+
+    // real ids
+    private String admobAppId;
+    private String admobUnitIdBanner;
+    private String admobUnitIdInterstitial;
+    private String admobUnitIdInterstitialVideo;
+    private String admobUnitIdRewardedVideo;
+    private String admobUnitIdNativeAdvanced;
+    private String admobUnitIdNativeAdvancedVideo;
+    // test device, use to test with device
+    private String testDevice = "33BE2250B43518CCDA7DE426D04EE231";
+
+    // run type
+    private String runType = RUN_TYPE_PROD;
+
+
+
+    // ads
+    private InterstitialAd mInterstitialAd;
+    private RewardedVideoAd mRewardedVideoAd;
+
+
+
 
 
     // banner
