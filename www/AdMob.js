@@ -50,6 +50,7 @@ AdMob.isInitialized = function isInitialized() {
 
 /**
  * init
+ * @param {Boolean} params.overlap
  * @param {Boolean} params.runType
  * @param {String} params.testDevice
  * @param {String} params.admobAppId
@@ -65,6 +66,8 @@ AdMob.isInitialized = function isInitialized() {
 AdMob.init = function (params) {
     console.log("ADmob.init...params:" + JSON.stringify(params));
     params = defaults(params, {
+        overlap: true,
+
         runType: this.enum.RUN_TYPE_PROD,
         testDevice: "",
         admobAppId: "",
@@ -81,6 +84,8 @@ AdMob.init = function (params) {
     // }
 
     callPlugin('init', {
+        overlap: params.overlap,
+
         runType: params.runType,
         testDevice: params.testDevice,
         admobAppId: params.admobAppId,

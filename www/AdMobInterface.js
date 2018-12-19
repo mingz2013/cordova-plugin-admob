@@ -1,6 +1,12 @@
 'use strict';
 
 
+var log = function (funcName, message) {
+    console.log("<AdMobInterafce><log>-<" + funcName + "> msg:" + message);
+};
+
+
+
 /**
  * init
  * @param {Boolean} params.runType
@@ -18,9 +24,7 @@ var AdMobInterafce = function (params) {
 };
 
 
-var log = function (funcName, message) {
-    console.log("<AdMobInterafce><log>-<" + funcName + "> msg:" + message);
-};
+
 
 
 AdMobInterafce.prototype._initListener = function () {
@@ -237,7 +241,14 @@ AdMobInterafce.prototype.init = function (params) {
 
 
 AdMobInterafce.prototype.showBanner = function () {
-    AdMob.showBanner();
+    AdMob.showBanner({
+        onSuccess: function () {
+            log("showBanner", "onSuccess....");
+        }.bind(this),
+        onFailure: function () {
+            log("showBanner", "onFailure....");
+        }.bind(this)
+    });
 };
 
 

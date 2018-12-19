@@ -19,6 +19,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class AdMobPlugin extends CordovaPlugin {
 
@@ -80,10 +84,45 @@ public class AdMobPlugin extends CordovaPlugin {
 
 
 
-
+    // ads
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd mRewardedVideoAd;
+
+
+
+    // banner position
+    final private int BANNER_POSITION_NO_CHANGE = 0;
+    final private int BANNER_POSITION_TOP_LEFT = 1;
+    final private int BANNER_POSITION_TOP_CENTER = 2;
+    final private int BANNER_POSITION_TOP_RIGHT = 3;
+    final private int BANNER_POSITION_LEFT = 4;
+    final private int BANNER_POSITION_CENTER = 5;
+    final private int BANNER_POSITION_RIGHT = 6;
+    final private int BANNER_POSITION_BOTTOM_LEFT = 7;
+    final private int BANNER_POSITION_BOTTOM_CENTER = 8;
+    final private int BANNER_POSITION_BOTTOM_RIGHT = 9;
+    final private int BANNER_POSITION_POS_XY = 10;
+
+
+    // banner
     private AdView mBannerView;
+
+    private ViewGroup mParentView;
+
+    private RelativeLayout mOverlapLayout = null;
+    private LinearLayout mSplitLayout = null;
+
+    private boolean mBannerVisible = false;
+    private boolean mOverlap = true;
+    private int mBannerPosition = BANNER_POSITION_BOTTOM_CENTER;
+    private int posX = 0;
+    private int posY = 0;
+
+
+
+
+
+
 
 
 
@@ -209,7 +248,7 @@ public class AdMobPlugin extends CordovaPlugin {
             mRewardedVideoAd.resume(this.getActivity());
         }
         if (mBannerView != null) {
-            mBannerView.pause();
+            mBannerView.resume();
         }
 
 
@@ -223,7 +262,7 @@ public class AdMobPlugin extends CordovaPlugin {
             mRewardedVideoAd.pause(this.getActivity());
         }
         if (mBannerView != null) {
-            mBannerView.resume();
+            mBannerView.pause();
         }
 
         super.onPause(multitasking);
@@ -300,7 +339,9 @@ public class AdMobPlugin extends CordovaPlugin {
     private void init(JSONObject args) throws JSONException {
         this.testDevice = args.getString("testDevice");
 
+        this.mOverlap = args.getBoolean("overlap");
         this.runType = args.getString("runType");
+
 
         if(this.runType.equals(RUN_TYPE_TEST_WITH_TEST_ID)){
             this.admobAppId = TEST_ADMOB_APP_ID;
@@ -530,8 +571,18 @@ public class AdMobPlugin extends CordovaPlugin {
         final String size = args.getString("size");
         final int w = args.getInt("w");
         final int h = args.getInt("h");
-        this.createBanner(getBannerSize(size, w, h));
-        callbackContext.success();
+
+
+        final AdMobPlugin self = this;
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                self.createBanner(getBannerSize(size, w, h));
+                callbackContext.success();
+            }
+        });
+
+
 
     }
 
@@ -590,43 +641,264 @@ public class AdMobPlugin extends CordovaPlugin {
 
     private void execActionLoadBanner(JSONObject args, CallbackContext callbackContext) {
 
-        this.loadBanner();
-        callbackContext.success();
+        final AdMobPlugin self = this;
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                self.loadBanner();
+                callbackContext.success();
+            }
+        });
+
 
     }
 
     private void loadBanner() {
+        if(mBannerView != null) {
+
+            _loadBanner();
+
+        }else{
+            Log.e(TAG, "loadBanner: mBannerView is null");
+        }
+    }
+
+
+    private void _loadBanner(){
         AdRequest.Builder builder = new AdRequest.Builder();
-        if(this.runType.equals(RUN_TYPE_TEST_WITH_DEVICE)){
+        if (this.runType.equals(RUN_TYPE_TEST_WITH_DEVICE)) {
             builder.addTestDevice(this.testDevice);
         }
         AdRequest adRequest = builder.build();
         mBannerView.loadAd(adRequest);
     }
 
-    private void execActionShowBanner(JSONObject args, CallbackContext callbackContext) {
 
-        this.showBanner();
-        callbackContext.success();
+    private void execActionShowBanner(JSONObject args, CallbackContext callbackContext) throws JSONException{
+        int pos = args.getInt("pos");
+        int x = args.getInt("x");
+        int y = args.getInt("y");
+
+
+        final AdMobPlugin self = this;
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                self.showBanner(pos, x, y);
+                callbackContext.success();
+            }
+        });
+
 
     }
 
 
-    private void showBanner() {
+    private void showBanner(int argPos, int argX, int argY) {
         // TODO
+        Log.d(TAG, "showBanner: ......." + argPos + " " + argX + " " + argY);
+
+        if (mBannerView != null) {
+
+            View mainView = this.webView.getView();
+            if (mainView == null) {
+                Log.e(TAG, "Error: could not get main view");
+            } else {
+                Log.d(TAG, "webview class: " + mainView.getClass());
+                Log.d(TAG, "showBanner: ....bannerVisible:" + mBannerVisible);
+                if (mBannerVisible) {
+                    _detachBanner();
+                }
+
+
+                ViewGroup rootView = (ViewGroup) mainView.getRootView();
+//                int rw = rootView.getWidth();
+//                int rh = rootView.getHeight();
+
+                int ww = mainView.getWidth();
+                int wh = mainView.getHeight();
+
+//                int bw = this.bannerView.getWidth();
+//                int bh = this.bannerView.getHeight();
+                int bw = mBannerView.getWidth();
+                int bh = mBannerView.getHeight();
+                mBannerPosition = (argPos == 0) ?  mBannerPosition:argPos;
+                Log.d(TAG, String.format("show banner: x,y: (%d x %d)", bw, bh));
+
+                Log.w(TAG, "show banner, mOverlap: " + mOverlap + ", position: " + mBannerPosition);
+                if (mOverlap) {
+                    int x = 0, y = 0;
+//                    int ww = mainView.getWidth();
+//                    int wh = mainView.getHeight();
+                    if (mBannerPosition >= 1 && mBannerPosition <= 9) {
+                        switch ((mBannerPosition - 1) % 3) {
+                            case 0:
+                                x = 0;
+                                break;
+                            case 1:
+                                x = (ww - bw) / 2;
+                                break;
+                            case 2:
+                                x = ww - bw;
+                        }
+
+                        switch ((mBannerPosition - 1) / 3) {
+                            case 0:
+                                y = 0;
+                                break;
+                            case 1:
+                                y = (wh - bh) / 2;
+                                break;
+                            case 2:
+                                y = wh - bh;
+                        }
+                    } else if (mBannerPosition == 10) {
+                        x = argX;
+                        y = argY;
+                    } else {
+                        x = this.posX;
+                        y = this.posY;
+                    }
+
+                    this.posX = x;
+                    this.posY = y;
+
+                    Log.d(TAG, "showBanner: bannerView   111111 x,y,w,h:" + x + "," + y + "," + bw + "," + bh);
+
+                    int[] offsetRootView = new int[]{0, 0};
+                    int[] offsetWebView = new int[]{0, 0};
+                    rootView.getLocationOnScreen(offsetRootView);
+                    mainView.getLocationOnScreen(offsetWebView);
+                    x += offsetWebView[0] - offsetRootView[0];
+                    y += offsetWebView[1] - offsetRootView[1];
+                    Log.d(TAG, "showBanner: bannerView       222222 x,y,w,h:" + x + "," + y + "," + bw + "," + bh);
+                    if (mOverlapLayout == null) {
+                        mOverlapLayout = new RelativeLayout(this.getActivity());
+//                        this.overlapLayout.setBackgroundColor(Color.parseColor("#FF00FF"));
+//                        this.overlapLayout.
+                        rootView.addView(mOverlapLayout, new RelativeLayout.LayoutParams(-1, -1));
+                        Log.d(TAG, "showBanner: overlaplayout add to rootView....");
+                        mOverlapLayout.bringToFront();
+                    }
+
+//                    bw = rw;
+//                    bh = 200;
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(bw, bh);
+//                    x = y = 0;
+                    Log.d(TAG, "showBanner: bannerView x,y,w,h:" + x + "," + y + "," + bw + "," + bh);
+
+
+                    params.leftMargin = x;
+                    params.topMargin = y;
+//                    this.bannerView.setBackgroundColor(Color.parseColor("#FF00FF"));
+                    this.mOverlapLayout.addView(this.mBannerView, params);
+                    mBannerView.bringToFront();
+                    mParentView = this.mOverlapLayout;
+                    Log.d(TAG, "showBanner: overlaplayout........");
+                } else {
+                    mParentView = (ViewGroup) mainView.getParent();
+                    if (!(mParentView instanceof LinearLayout)) {
+                        mParentView.removeView(mainView);
+                        LinearLayout splitLayout = new LinearLayout(this.getActivity());
+                        splitLayout.setOrientation(LinearLayout.VERTICAL);
+                        splitLayout.setLayoutParams(new android.widget.LinearLayout.LayoutParams(-1, -1, 0.0F));
+                        mainView.setLayoutParams(new android.widget.LinearLayout.LayoutParams(-1, -1, 1.0F));
+                        splitLayout.addView(mainView);
+                        this.getActivity().setContentView(splitLayout);
+                        mParentView = splitLayout;
+                    }
+
+                    if (mBannerPosition <= 3) {
+                        mParentView.addView(mBannerView, 0);
+                    } else {
+                        mParentView.addView(mBannerView);
+                    }
+                }
+
+                mParentView.bringToFront();
+                mParentView.requestLayout();
+                mBannerView.setVisibility(View.VISIBLE);
+                mBannerVisible = true;
+                mBannerView.resume();
+                mainView.requestFocus();
+
+
+                Log.d(TAG, "showBanner: .......end.....");
+
+            }
+        }
     }
 
     private void execActionHideBanner(JSONObject args, CallbackContext callbackContext) {
 
-        this.hideBanner();
-        callbackContext.success();
+
+
+        final AdMobPlugin self = this;
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                self.hideBanner();
+                callbackContext.success();
+
+
+            }
+        });
+
+
+
 
     }
 
 
     private void hideBanner() {
-// TODO
+        Log.d(TAG, "hideBanner: ");
+        if (mBannerView != null) {
+//            this.autoShowBanner = false;
+            _detachBanner();
+//            this.pauseAdView(bannerView);
+            mBannerView.pause();
+        }
     }
+
+
+
+    private void _detachBanner(){
+        Log.d(TAG, "_detachBanner: ");
+        if (mBannerView != null) {
+            mBannerView.setVisibility(View.INVISIBLE);
+            mBannerVisible = false;
+            ViewGroup parentView = (ViewGroup) mBannerView.getParent();
+            if (parentView != null) {
+                parentView.removeView(mBannerView);
+            }
+
+        }
+    }
+
+
+    private void _removeBanner(){
+        Log.d(TAG, "_removeBanner: ");
+        if (mBannerView != null) {
+            hideBanner();
+            _destroyBanner();
+        }
+
+        mBannerVisible = false;
+    }
+
+
+    private void _destroyBanner(){
+        Log.d(TAG, "_destroyBanner: ");
+        if(mBannerView != null){
+            mBannerView.destroy();
+            mBannerView = null;
+        }
+    }
+
 
 
 }
