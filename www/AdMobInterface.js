@@ -6,7 +6,6 @@ var log = function (funcName, message) {
 };
 
 
-
 /**
  * init
  * @param {Boolean} params.runType
@@ -20,11 +19,23 @@ var log = function (funcName, message) {
  * @param {String} params.admobUnitIdNativeAdvancedVideo
  */
 var AdMobInterafce = function (params) {
-    this.init(params);
+
+    this.AD_STATUS = {
+        none: 0,
+        loading: 1,
+        loaded: 2,
+        loadedfail: 3,
+        closed: 4,
+    };
+
+
+    this._bannerStatus = this.AD_STATUS.none;
+    this._interstitialStatus = this.AD_STATUS.none;
+    this._rewardedVideoStatus = this.AD_STATUS.none;
+
+
+    this._init(params);
 };
-
-
-
 
 
 AdMobInterafce.prototype._initListener = function () {
@@ -195,7 +206,7 @@ AdMobInterafce.prototype._initListener = function () {
  * @param {String} params.admobUnitIdNativeAdvanced
  * @param {String} params.admobUnitIdNativeAdvancedVideo
  */
-AdMobInterafce.prototype.init = function (params) {
+AdMobInterafce.prototype._init = function (params) {
     params = defaults(params, {
         runType: this.enum.RUN_TYPE_PROD,
         testDevice: "",
@@ -230,6 +241,10 @@ AdMobInterafce.prototype.init = function (params) {
 
             this._initListener();
 
+            AdMob.loadInterstitial();
+            AdMob.loadBanner();
+            AdMob.loadRewardedVideo();
+
 
         }.bind(this)
 
@@ -239,9 +254,21 @@ AdMobInterafce.prototype.init = function (params) {
 
 };
 
+/**
+ * showBanner
+ * @param {int} params.pos
+ * @param {int} params.x
+ * @param {int} params.y
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
+AdMobInterafce.prototype.showBanner = function (params) {
+    params = defaults(params, {pos: AdMob.enum.AD_POSITION.BOTTOM_CENTER, x: 0, y: 0});
 
-AdMobInterafce.prototype.showBanner = function () {
     AdMob.showBanner({
+        pos: params.pos,
+        x: params.x,
+        y: params.y,
         onSuccess: function () {
             log("showBanner", "onSuccess....");
         }.bind(this),
@@ -249,19 +276,55 @@ AdMobInterafce.prototype.showBanner = function () {
             log("showBanner", "onFailure....");
         }.bind(this)
     });
+
 };
 
-
+/**
+ * hideBanner
+ */
 AdMobInterafce.prototype.hideBanner = function () {
     AdMob.hideBanner();
 };
 
-
+/**
+ * showInterstitial
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
 AdMobInterafce.prototype.showInterstitial = function (params) {
-    AdMob.showInterstitial({});
+
+    AdMob.isInterstitialLoaded({
+        onSuccess: function (isLoaded) {
+            if (isLoaded) {
+                AdMob.showInterstitial({});
+            } else {
+
+                params.onFailure();
+
+                AdMob.isInterstitialLoading({
+                    onSuccess: function (isLoading) {
+                        if (!isLoading) {
+                            AdMob.loadInterstitial({});
+                        }
+                    }
+                });
+
+
+            }
+        },
+        onFailure: function () {
+            params.onFailure();
+        }
+    })
+
 };
 
 
+/**
+ * showRewardedVideo
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
 AdMobInterafce.prototype.showRewardedVideo = function (params) {
     AdMob.showRewardedVideo();
 };

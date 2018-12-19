@@ -36,6 +36,21 @@ AdMob.enum = {
     RUN_TYPE_TEST_WITH_DEVICE: "RUN_TYPE_TEST_WITH_DEVICE",
 
 
+    AD_POSITION: {
+        NO_CHANGE: 0,
+        TOP_LEFT: 1,
+        TOP_CENTER: 2,
+        TOP_RIGHT: 3,
+        LEFT: 4,
+        CENTER: 5,
+        RIGHT: 6,
+        BOTTOM_LEFT: 7,
+        BOTTOM_CENTER: 8,
+        BOTTOM_RIGHT: 9,
+        POS_XY: 10
+    },
+
+
 };
 
 
@@ -127,6 +142,55 @@ AdMob.createInterstitial = function (params) {
     }, params.onFailure);
 };
 
+/**
+ * createRewardedVideo
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
+AdMob.createRewardedVideo = function (params) {
+    callPlugin('createRewardedVideo', {}, function () {
+
+
+        if (isFunction(params.onSuccess)) {
+            params.onSuccess();
+        }
+
+    }, params.onFailure);
+};
+
+/**
+ * loadRewardedVideo
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
+AdMob.loadRewardedVideo = function (params) {
+    callPlugin('loadRewardedVideo', {}, function () {
+
+
+        if (isFunction(params.onSuccess)) {
+            params.onSuccess();
+        }
+
+    }, params.onFailure);
+};
+
+
+/**
+ * showRewardedVideo
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
+AdMob.showRewardedVideo = function (params) {
+    callPlugin('showRewardedVideo', {}, function () {
+
+
+        if (isFunction(params.onSuccess)) {
+            params.onSuccess();
+        }
+
+    }, params.onFailure);
+};
+
 
 /**
  * loadInterstitial
@@ -144,6 +208,44 @@ AdMob.loadInterstitial = function (params) {
 
     }, params.onFailure);
 };
+
+/**
+ * isInterstitialLoading
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
+AdMob.isInterstitialLoading = function (params) {
+
+    callPlugin('isInterstitialLoading', {}, function (isLoading) {
+
+
+        if (isFunction(params.onSuccess)) {
+            params.onSuccess(isLoading);
+        }
+
+    }, params.onFailure);
+
+
+};
+
+/**
+ * isInterstitialLoaded
+ * @param {Function} params.onSuccess - optional on success callback
+ * @param {Function} params.onFailure - optional on failure callback
+ */
+AdMob.isInterstitialLoaded = function (params) {
+
+    callPlugin('isInterstitialLoaded', {}, function (isLoaded) {
+
+
+        if (isFunction(params.onSuccess)) {
+            params.onSuccess(isLoaded);
+        }
+
+    }, params.onFailure);
+
+};
+
 
 /**
  * showInterstitial
@@ -207,12 +309,21 @@ AdMob.loadBanner = function (params) {
 
 /**
  * showBanner
+ * @param {int} params.pos
+ * @param {int} params.x
+ * @param {int} params.y
  * @param {Function} params.onSuccess - optional on success callback
  * @param {Function} params.onFailure - optional on failure callback
  */
 AdMob.showBanner = function (params) {
 
-    callPlugin('showBanner', {}, function () {
+    params = defaults(params, {pos: this.enum.AD_POSITION.BOTTOM_CENTER, x: 0, y: 0});
+
+    callPlugin('showBanner', {
+        pos: params.pos,
+        x: params.x,
+        y: params.y
+    }, function () {
 
 
         if (isFunction(params.onSuccess)) {
