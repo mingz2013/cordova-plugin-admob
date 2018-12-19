@@ -55,8 +55,8 @@
 
         <header-file src="src/ios/AdMobPlugin.h"/>
         <source-file src="src/ios/AdMobPlugin.m"/>
-
-        <framework src="Google-Mobile-Ads-SDK" type="podspec"/>
+        <!--spec 必须有，否则安装报错-->
+        <framework src="Google-Mobile-Ads-SDK" type="podspec" spec="~> 7.37.0"/>
 
     </platform>
 
