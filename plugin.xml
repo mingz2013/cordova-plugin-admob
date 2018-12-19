@@ -13,12 +13,6 @@
 
     <preference name="ADMOB_APP_ID" value="ca-app-pub-3940256099942544~3347511713"/>
 
-    <engines>
-        <engine name="cordova-android"/>
-        <!--<engine name="cordova-ios" />-->
-    </engines>
-
-
     <js-module src="www/AdMob.js" name="AdMob">
         <clobbers target="AdMob"/>
     </js-module>
